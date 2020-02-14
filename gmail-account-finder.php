@@ -57,7 +57,8 @@ function decodeMessages($messages)
             $rawData = $parts[0]['body']->data;
             $sanitizedData = strtr($rawData,'-_', '+/');
 
-            echo base64_decode($sanitizedData);
+            $decodedEmail = base64_decode($sanitizedData);
+            searchEmail($decodedEmail);
         }
     }
 }
@@ -86,6 +87,27 @@ function getMessages($nextPage = null)
     if ($nextPageToken) {
         getMessages($nextPageToken);
     }
+}
+
+function searchEmail(string $emailContent)
+{
+    $keywords = [
+        'account created',
+        'welcome to',
+        'verify your account',
+        'confirm your email',
+        'verify your email address',
+        'registration',
+        'activate account'
+    ];
+
+    foreach ($keywords as $keyword) {
+        if (stripos($emailContent, $keyword) !== false) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 getMessages();
