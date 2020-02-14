@@ -1,0 +1,14 @@
+{
+    "name": "ivanljutyj/gmail-account-finder",
+    "description": "Find all the accounts associated with a gmail address",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Ivan Ivanoff",
+            "email": "contact@ivanon.io"
+        }
+    ],
+    "require": {
+        "google/apiclient": "^2.0"
+    }
+}
