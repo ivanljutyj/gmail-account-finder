@@ -53,12 +53,15 @@ function decodeMessages($messages)
     foreach($messages as $message) {
         $response = $gmail->users_messages->get('me', $message->getId(), ['format' => 'full']);
         $parts = $response->getPayload()->getParts();
+        $headers = $response->getPayload()->getHeaders();
         if (isset($parts[0]['body'])) {
             $rawData = $parts[0]['body']->data;
             $sanitizedData = strtr($rawData,'-_', '+/');
 
             $decodedEmail = base64_decode($sanitizedData);
-            searchEmail($decodedEmail);
+            if (searchEmail($decodedEmail)) {
+                parseSenderEmailFromHeaders($headers);
+            }
         }
     }
 }
@@ -108,6 +111,16 @@ function searchEmail(string $emailContent)
     }
 
     return false;
+}
+
+function parseSenderEmailFromHeaders($headers)
+{
+    foreach($headers as $header)
+    {
+        if ($header['name'] === 'From') {
+            echo $header['value'].PHP_EOL;
+        }
+    }
 }
 
 getMessages();
