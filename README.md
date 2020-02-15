@@ -24,3 +24,5 @@ php gmail-account-finder.php
 ```
 You will be prompted to authenticate with google and you will be provided with a key to authenticate yourself.
 
+### Example
+![example](https://raw.githubusercontent.com/ivanljutyj/gmail-account-finder/master/example.jpg)
