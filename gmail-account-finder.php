@@ -11,6 +11,14 @@ function getClient()
     $client = new Google_Client();
     $client->setApplicationName('Gmail Account Finder');
     $client->setScopes(Google_Service_Gmail::GMAIL_READONLY);
+
+    if (!file_exists('credentials.json')) {
+        throw new \Exception(
+            "credentials.json is MISSING!
+            You can generate one here: 
+            https://developers.google.com/gmail/api/quickstart/php#step_1_turn_on_the\n
+            ");
+    }
     $client->setAuthConfig('credentials.json');
     $client->setAccessType('offline');
     $client->setPrompt('select_account consent');
