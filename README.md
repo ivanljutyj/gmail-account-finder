@@ -2,7 +2,7 @@
 
 ### Purpose of this project
 
-The goal was to find out all the email addresses associated to my gmail account and to get used to working with the Google PHP API client.
+The goal was to find all the online accounts that are associated to my gmail account and to get used to working with the Google PHP API client.
 
 ### Installation
 
