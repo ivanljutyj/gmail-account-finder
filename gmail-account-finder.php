@@ -58,14 +58,13 @@ function decodeMessages($messages)
             $rawData = $parts[0]['body']->data;
             $sanitizedData = strtr($rawData,'-_', '+/');
 
-            $decodedEmail = base64_decode($sanitizedData);
-            if (searchEmail($decodedEmail)) {
-                parseSenderEmailFromHeaders($headers);
+            $decodedEmail = trim(base64_decode($sanitizedData));
+            if ($foundKeyword = findWebsiteAssocWithEmail($decodedEmail)) {
+                 printf("Website: %s\t Keyword: %s\n", parseSenderEmailFromHeaders($headers), $foundKeyword);
             }
         }
     }
 }
-
 
 function getMessages($nextPage = null)
 {
@@ -74,7 +73,7 @@ function getMessages($nextPage = null)
 
     $options = [
         'labelIds' => 'INBOX',
-        'maxResults' => 5
+        'maxResults' => 100
     ];
 
     if ($nextPage) {
@@ -92,7 +91,7 @@ function getMessages($nextPage = null)
     }
 }
 
-function searchEmail(string $emailContent)
+function findWebsiteAssocWithEmail(string $emailContent)
 {
     $keywords = [
         'account created',
@@ -101,12 +100,14 @@ function searchEmail(string $emailContent)
         'confirm your email',
         'verify your email address',
         'registration',
-        'activate account'
+        'activate account',
+        'confirmation',
+        'unsubscribe'
     ];
 
     foreach ($keywords as $keyword) {
         if (stripos($emailContent, $keyword) !== false) {
-            return true;
+            return $keyword;
         }
     }
 
@@ -118,9 +119,17 @@ function parseSenderEmailFromHeaders($headers)
     foreach($headers as $header)
     {
         if ($header['name'] === 'From') {
-            echo $header['value'].PHP_EOL;
+            return parseDomain($header['value']);
         }
     }
+}
+
+function parseDomain($string)
+{
+    preg_match ("/@(.*?)>/", $string, $result);
+    $parts = explode(".", $result[1]);
+
+    return (array_key_exists(count($parts) - 2, $parts) ? $parts[count($parts) - 2] : "").".".$parts[count($parts) - 1];
 }
 
 getMessages();
